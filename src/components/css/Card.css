@@ -1,0 +1,60 @@
+/* src/components/Card.css */
+.card {
+  flex: 0 0 auto;
+  width: 200px;
+  margin: 10px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  overflow: hidden;
+  background-color: #fff;
+  opacity: 0.8;
+  transition: all 0.5s;
+  color: black;
+}
+
+.card:hover{
+ opacity: 1;
+}
+.card-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+h3 {
+  padding: 10px;
+  font-size: 16px;
+}
+
+.expanded {
+  width: 250px; /* Increase the width when expanded */
+  height: auto; /* Adjust the height based on the content */
+}
+
+.card-description {
+  padding: 10px;
+  font-size: 14px;
+  color: #333;
+}
+
+.card-icons {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.icon {
+  cursor: pointer;
+  font-size: 1.5em;
+  color: #333;
+  transition: color 0.3s ease;
+}
+
+.icon:hover {
+  color: #007bff;
+}
+
+.plus-icon {
+  margin-right: 10px;
+}
