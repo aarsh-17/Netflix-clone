@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix Sign In</title>
+    <link rel="stylesheet" href="/styles_sign.css">
+</head>
+<body>
+    <div class="container">
+        <div class="sign-in-box">
+            <h1>Login</h1>
+                <div class="input-group">
+                    <input type="email" placeholder="Email or phone number" id="username" required>
+                </div>
+                <div class="error" id="usernameError">Username is required</div>
+                <div class="input-group">
+                    <input type="password" placeholder="Password" id="password" required>
+                </div>
+                <div class="error" id="passwordError">Password must be at least 6 characters</div>
+                <button type="submit" class="sign-in-btn" onclick="validateForm()">Sign In</button>
+                <div class="support">
+                    <div class="remember-me">
+                        <input type="checkbox" id="remember-me">
+                        <label for="remember-me">Remember me</label>
+                    </div>
+                    <a href="#" class="need-help">Need help?</a>
+                </div>
+                <div class="sign-up-now">
+                    <p>New to Netflix? <a href="Netflix_sign_in.html">Sign up now.</a></p>
+                </div>
+                <div class="captcha-info">
+                    <p>This page is protected by Google reCAPTCHA to ensure you're not a bot. <a href="#">Learn more.</a></p>
+                </div>
+        </div>
+    </div>
+    <script
+src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"
+integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ=="
+crossorigin="anonymous"
+></script>
+<script>
+     async function postPeople(name,password){
+        try {
+            const {data}=await axios.post('http://localhost:5000/login',{name:name,password:password})
+            console.log(data);
+            
+          //   const h5 = document.createElement('h5')
+          // h5.textContent = data[data.length-1].name
+          // result.appendChild(h5)
+        } catch (error) {
+            console.log(error);
+            
+        }
+        
+    }
+    function validateForm() {
+        // Get form values
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+       
+        // Error flags
+        let isValid = true;
+
+        // Validate username
+        if (username === "") {
+            document.getElementById('usernameError').style.display = 'block';
+            isValid = false;
+        } else {
+            document.getElementById('usernameError').style.display = 'none';
+        }
+
+
+        // Validate password
+        if (password.length < 6) {
+            document.getElementById('passwordError').style.display = 'block';
+            isValid = false;
+        } else {
+            document.getElementById('passwordError').style.display = 'none';
+        }
+
+        // If form is valid, show a success message
+        if (isValid) {
+            console.log("NO ERRORs!!!");
+            
+            postPeople(username,password)
+        }
+    }
+</script>
+</body>
+</html>

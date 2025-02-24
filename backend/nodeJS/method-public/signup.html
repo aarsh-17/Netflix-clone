@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .signup-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .error {
+            color: red;
+            font-size: 0.9em;
+            display: none;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+<div class="signup-container">
+    <h2>Sign Up</h2>
+    <form id="signupForm">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="Enter your username">
+            <div class="error" id="usernameError">Username is required</div>
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Enter your email">
+            <div class="error" id="emailError">Please enter a valid email</div>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter your password">
+            <div class="error" id="passwordError">Password must be at least 6 characters</div>
+        </div>
+        <div class="form-group">
+            <label for="confirmPassword">Confirm Password</label>
+            <input type="password" id="confirmPassword" placeholder="Confirm your password">
+            <div class="error" id="confirmPasswordError">Passwords do not match</div>
+        </div>
+        <button type="button" onclick="validateForm()">Sign Up</button>
+       
+        <div class="result"></div>
+        
+    </form>
+    <input type="text" id="og" placeholder="original name">
+    <input type="text" id="put" placeholder="new name">
+    <button class="put_btn">put op</button>
+    <p id="put_out"></p>
+    <input type="text" id="del" placeholder="to be deleted">
+    <button class="del_btn">del op</button>
+    <p id="del_out"></p>
+</div>
+<script
+src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"
+integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ=="
+crossorigin="anonymous"
+></script>
+<script>
+    const result=document.querySelector('.result')
+    const fetchpeople=async ()=>{
+          try{
+          const {data}= await axios.get('http://localhost:5000/api/people');
+     
+            const people=data.data.map((person)=>{
+              return `<h3>${person.name}</h3>`
+            })
+            result.innerHTML=people.join('')
+          }
+          catch(error){
+            console.log(error);
+            
+          }
+        }
+
+   async function postPeople(name,password){
+        try {
+            const {data}=await axios.post('http://localhost:5000/api/people',{name:name,password:password})
+            
+            const h5 = document.createElement('h5')
+          h5.textContent = data[data.length-1].name
+          result.appendChild(h5)
+        } catch (error) {
+            console.log(error);
+            
+        }
+        
+    }
+    fetchpeople()
+    function validateForm() {
+        // Get form values
+        const username = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        
+       
+        // Error flags
+        let isValid = true;
+
+        // Validate username
+        if (username === "") {
+            document.getElementById('usernameError').style.display = 'block';
+            isValid = false;
+        } else {
+            document.getElementById('usernameError').style.display = 'none';
+        }
+
+        // Validate email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            document.getElementById('emailError').style.display = 'block';
+            isValid = false;
+        } else {
+            document.getElementById('emailError').style.display = 'none';
+        }
+
+        // Validate password
+        if (password.length < 6) {
+            document.getElementById('passwordError').style.display = 'block';
+            isValid = false;
+        } else {
+            document.getElementById('passwordError').style.display = 'none';
+        }
+
+        // Validate confirm password
+        if (password !== confirmPassword) {
+            document.getElementById('confirmPasswordError').style.display = 'block';
+            isValid = false;
+        } else {
+            document.getElementById('confirmPasswordError').style.display = 'none';
+        }
+
+        // If form is valid, show a success message
+        if (isValid) {
+            
+            postPeople(username,password)
+        }
+    }
+    
+  
+        const put_btn=document.querySelector('.put_btn')
+        put_btn.addEventListener('click',async ()=>{
+            const {data}= await axios.get('http://localhost:5000/api/people');
+            const inp=document.getElementById('put')
+            const og=document.getElementById('og')
+            console.log(data);
+            const people=data.data
+            const id=people.find((user)=>user.name===og.value)
+            
+            const par=id.id
+            
+            await axios.put(`http://localhost:5000/api/people/${par}`,{name:inp.value})
+                .then(res=>{
+                    document.getElementById('put_out').innerText="Updated Successfully"
+                })
+                .catch(err=>{
+                    document.getElementById('put_out').innerText="Error"
+                })
+        })
+
+        const del_btn=document.querySelector('.del_btn')
+        
+        del_btn.addEventListener('click',async ()=>{
+            const {data}= await axios.get('http://localhost:5000/api/people');
+            const inp=document.getElementById('del').value
+            const id=data.data.find((user)=>user.name===inp)
+            
+            const par=id.id
+            await axios.delete(`http://localhost:5000/api/people/${par}`)
+                .then(res=>{
+                    document.getElementById('put_out').innerText="Updated Successfully"
+                })
+                .catch(err=>{
+                    document.getElementById('put_out').innerText="Error"
+                })
+
+        })
+        
+    
+</script>
+
+</body>
+</html>
